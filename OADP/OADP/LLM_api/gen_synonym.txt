@@ -1,0 +1,4 @@
+: list a few classes that may look similar to this class in blurry photos. 
+They don't have to have similar functions.
+List each noun on a new line, numebred. 
+Don't list more than 5 classes.

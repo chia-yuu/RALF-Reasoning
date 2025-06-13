@@ -1,0 +1,6 @@
+: these are two similar vocabularies. 
+Describe the visual features of the first vocabulary with multiple phrases. 
+Each phrase should describe it in a way that does not suit the second vocabulary.
+In other words, point out visual features that the first has but the second doesn't.
+Phrases should not be full sentences, and should only describe one of the vocabulary at a time.
+List one phrase in each line, numbered. 
