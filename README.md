@@ -1,47 +1,45 @@
-# Retrieval-Augmented Open-Vocabulary Object Detection
-This is the official implementation of CVPR 2024 paper "[Retrieval-Augmented Open-Vocabulary Object Detection](https://arxiv.org/abs/2404.05687)".
+# RALF reasoning: Multi-Layer LLM Prompting for Open-Vocabulary Object Detection
+> Chia-Yu Wu, Wei Huang
+> 
+> National Yang Ming Chiao Tung University
+> 
+Our project is based on the paper "[Retrieval-Augmented Open-Vocabulary Object Detection](https://arxiv.org/abs/2404.05687)". Here is its [GitHub](https://github.com/mlvlab/RALF/tree/main?tab=readme-ov-file)
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/retrieval-augmented-open-vocabulary-object/open-vocabulary-object-detection-on-mscoco)](https://paperswithcode.com/sota/open-vocabulary-object-detection-on-mscoco?p=retrieval-augmented-open-vocabulary-object)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/retrieval-augmented-open-vocabulary-object/open-vocabulary-object-detection-on-lvis-v1-0)](https://paperswithcode.com/sota/open-vocabulary-object-detection-on-lvis-v1-0?p=retrieval-augmented-open-vocabulary-object)
-> Jooyean Kim*, Eulrang Cho*, Sehyung Kim, Hyunwoo J. Kim.
-> 
-> Department of Computer Science and Engineering, Korea University
-> 
-![ralf_figure](https://github.com/user-attachments/assets/09e8ac36-135e-42cd-a6f2-877288e4a3da)
 ## Introduction
+![RAF flow chart](Figures/RAF%20flow%20chart.png)
+The paper proposed a method called RALF to inhance the model's accuracy on open-vocabulary object detection. The method includes RAL and RAF, and our project is to modify RAF to make the model generate better concepts.
 
-RALF is structured into multiple branches.
+We add one more LLM in RAF pipeline. This two-LLM structure can do reasoning and therefore generate better concepts. In the first LLM, we ask it to list some nouns that may appear similar to {vocabulary}. For example, for vocabulary "truck", the LLM will return "train" and "bus". Then we pass these nouns to the second LLM and ask it to point out the visual differences between {vocabulary} and {synonym}. For example, with vocabulary "truck" and synonmy "train", "bus", the LLM will output "Multiple carriages, No large tires" for train and "Rectangular shape" for bus. Save these outputs as the concepts and use them to augment the visual fearures.
 
-- [`prerequisite`](https://github.com/mlvlab/RALF/tree/prerequisite) branch: The code for prerequisites necessary for running RALF. 
-- [`RAF`](https://github.com/mlvlab/RALF/tree/RAF) branch: The code for training RAF.
+## Installation
+Following the [RALF documentation](https://github.com/mlvlab/RALF/tree/OADP?tab=readme-ov-file) to setup the environment.
 
-The other branches are the integration of existing OVD model and RALF.
-- [`OADP`](https://github.com/mlvlab/RALF/tree/OADP) branch: The baseline is [OADP](https://github.com/LutingWang/OADP).
-- [`Centric`](https://github.com/mlvlab/RALF/tree/Centric) branch: The baseline is [Object-Centric-OVD](https://github.com/hanoonaR/object-centric-ovd).
-- [`DetPro`](https://github.com/mlvlab/RALF/tree/DetPro) branch: The baseline is [DetPro](https://github.com/dyabel/detpro).
+## Preparation
+Following the [OADP documentation](https://github.com/LutingWang/OADP/blob/main/README.md), prepare the data for baseline training as shown below.
+```
+~/OADP
+    ├── pretrained
+    └── data
+        ├── coco
+        ├── lvis_v1
+        └── prompts
+```
+
+## Run code
+### RAL training
+```
+torchrun --nproc_per_node=4 -m oadp.dp.train coco_ral ./configs/dp/ralf/ral/coco_ral.py
+```
+
+### RALF inference
+```
+torchrun --nproc_per_node=4 -m oadp.dp.test ./configs/dp/ralf/raf/coco_raf.py work_dirs/coco_ral/iter_32000.pth
+```
 
 ## Results
-### COCO
-|Model|$\text{AP}^\text{N}_\text{50}$|
-|---|---|
-|RALF + OADP| 33.4 |
-|RALF + Object-Centric-OVD| 41.3 |
-
-### LVIS
-|Model|$\text{AP}_\text{r}$|
-|---|---|
-|RALF + OADP| 21.9 |
-|RALF + DetPro| 21.1 |
-|RALF + Object-Centric-OVD| 18.5 |
-
-## Citation
-```
-@inproceedings{kim2024retrieval,
-  title={Retrieval-Augmented Open-Vocabulary Object Detection},
-  author={Kim, Jooyeon and Cho, Eulrang and Kim, Sehyung and Kim, Hyunwoo J},
-  booktitle={CVPR},
-  year={2024}
-}
-```
-## References
-This code is built on [CLIP](https://github.com/openai/CLIP), [V3Det](https://github.com/V3Det/V3Det), [GPT-3](https://github.com/openai/gpt-3), [OADP](https://github.com/LutingWang/OADP), [Object-Centric-OVD](https://github.com/hanoonaR/object-centric-ovd) and [DetPro](https://github.com/dyabel/detpro).
+### OADP on COCO
+|Model|mAP|mAP score gain|
+|---|---|---|
+|Baseline| 48.10 | - |
+|RALF| 48.96 | +0.86 |
+|RALF + our structure| 49.09 | +0.13 |

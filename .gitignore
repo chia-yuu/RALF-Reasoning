@@ -1,0 +1,16 @@
+Centric/
+
+OADP/.dist_test/
+OADP/.vscode/
+OADP/amber_analysis_results/
+OADP/data/
+OADP/yui_analysis_results/
+OADP/yui_visualization_results/
+
+RAF/data/
+RAF/output/
+RAF/output0427/
+RAF/output0507/
+RAF/raf_ori.py
+
+README_ori.md
