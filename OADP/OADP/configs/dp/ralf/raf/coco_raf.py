@@ -37,7 +37,7 @@ model = dict(
             is_box_level=True,
             is_with_cc=True, 
             cc_weight_path='ralf/coco_strict_reasoning.pth',  # modify this line to replace with our raf
-            concept_pkl_path='ralf/v3det_noun_chunk_reasoning.pkl',   # modify this line to replace with our noun chunk
+            concept_pkl_path='ralf/v3det_gpt_noun_chunk_coco_strict_reasoning.pkl',   # modify this line to replace with our noun chunk
         )
     ),
 )

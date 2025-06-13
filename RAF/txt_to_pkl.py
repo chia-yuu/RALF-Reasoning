@@ -59,7 +59,7 @@ def GeneratePkl():
             'names': vocabulary
         }
     }
-    torch.save(data, 'v3det_noun_chunk_amber.pkl')    # modify the output file name (v3det_gpt_noun_chunk_coco_strict.pkl)
+    torch.save(data, 'v3det_noun_chunk_reasoning.pkl')    # modify the output file name (v3det_gpt_noun_chunk_coco_strict.pkl)
     print("finish generating pkl!")
 
 
@@ -77,7 +77,7 @@ def Raf():
         'raf.py',
         '--dataset', 'coco',
         '--work_dir', 'output/raf_coco',
-        '--concept_pkl_path', 'v3det_noun_chunk_amber.pkl',   # replace with the pkl file generated above
+        '--concept_pkl_path', 'v3det_noun_chunk_reasoning.pkl',   # replace with the pkl file generated above
         '--oake_file_path', 'clip_region/coco_oake_info_strict.pkl'
     ]
     env = os.environ.copy()
@@ -93,36 +93,6 @@ def Raf():
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-
-# ============================== run test.py (~ 1.5 hour) ============================== #
-def Test():
-    # command for test.py
-    test_command = [
-        'torchrun',
-        '--nproc_per_node=1',
-        '--master_port=29501',
-        '-m', 'oadp.dp.test',
-        './configs/dp/ralf/raf/coco_raf.py',            # modify this file to replace with our raf model
-        'work_dirs/coco_ral/iter_32000_OADP_repo.pth'
-    ]
-
-    # move to OADP/
-    working_dir = '../OADP/OADP'  # Update this with the actual absolute path
-    env = os.environ.copy()
-    env['PYTHONPATH'] = working_dir + ':' + env.get('PYTHONPATH', '')
-
-    print("start to run test.py...")
-
-    try:
-        # Run the command
-        subprocess.run(test_command, env=env, cwd=working_dir, check=True)
-        print("test.py completed successfully!")
-    except subprocess.CalledProcessError as e:
-        print(f"Error running test.py: {e}")
-    except Exception as e:
-        print(f"An unexpected error occurred while running test.py: {e}")
-
-
 if __name__ == "__main__":
     print("start generate plk...")
     GeneratePkl()
@@ -130,7 +100,4 @@ if __name__ == "__main__":
     print("start raf.py...")
     Raf()
     
-    print("start test.py...")
-    Test()
-
     print("all task finish!")

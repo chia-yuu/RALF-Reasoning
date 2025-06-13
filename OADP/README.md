@@ -1,8 +1,7 @@
-# RALF
-Official implementation of CVPR 2024 paper "[Retrieval-Augmented Open-Vocabulary Object Detection](https://arxiv.org/abs/2404.05687)".
+# RALF - OADP
 
 ## Introduction
-This `OADP` branch integrates RALF and [OADP](https://github.com/LutingWang/OADP).
+This `OADP` folder integrates RALF and [OADP](https://github.com/LutingWang/OADP).
 
 ## Installation
 - Python 3.10.13
@@ -38,8 +37,8 @@ Following the [OADP documentation](https://github.com/LutingWang/OADP/blob/main/
 ### Files for RALF
 To run RALF on OADP, several files are required.
 - `neg_feature_{dataset}.pkl` is the final output of the [`prerequisite`](https://github.com/mlvlab/RALF/tree/prerequisite) branch. This file can be downloaded from [here](https://drive.google.com/drive/folders/1ptNaoSlbvP4CXFXrI2gySCwtaiH3mOwA?usp=sharing).
-- `{dataset}_strict.pth` is the final output of the [`RAF`](https://github.com/mlvlab/RALF/tree/RAF) branch.
-- `v3det_gpt_noun_chunk_{dataset}_strict.pkl` can be obtained through the [`RAF`](https://github.com/mlvlab/RALF/tree/RAF) branch.
+- `{dataset}_strict_reasoning.pth` is the final output of the [`RAF`](../RAF/) folder.
+- `v3det_gpt_noun_chunk_{dataset}_strict.pkl` and `v3det_gpt_noun_chunk_coco_strict_reasoning.pkl` can be obtained through the [`RAF`](../RAF/) folder.
 
 Then, put the files under `~/OADP/ralf` folder.
 ```
@@ -49,7 +48,8 @@ Then, put the files under `~/OADP/ralf` folder.
         ├── coco_strict.pth
         ├── lvis_strict.pth
         ├── v3det_gpt_noun_chunk_coco_strict.pkl
-        └── v3det_gpt_noun_chunk_lvis_strict.pkl
+        ├── v3det_gpt_noun_chunk_lvis_strict.pkl
+        └── v3det_gpt_noun_chunk_coco_strict_reasoning.pkl
 ```
 
 ## RAL training
@@ -72,27 +72,4 @@ torchrun --nproc_per_node=4 -m oadp.dp.test ./configs/dp/ralf/raf/coco_raf.py wo
 torchrun --nproc_per_node=4 -m oadp.dp.test ./configs/dp/ralf/raf/lvis_raf.py work_dirs/lvis_ral/epoch_24.pth
 ```
 
-## Results
 The checkpoints for RALF are available [here](https://drive.google.com/drive/folders/1ptNaoSlbvP4CXFXrI2gySCwtaiH3mOwA?usp=sharing).
-### COCO
-|Method|$\text{AP}^\text{N}_\text{50}$|
-|---|---|
-|OADP + RAL| 31.3 |
-|OADP + RALF| 33.4 |
-
-### LVIS
-|Method|$\text{AP}_\text{r}$|
-|---|---|
-|OADP + RAL| 21.5 |
-|OADP + RALF| 21.9 |
-
-## RALF demo
-To view demo results of applying RALF to an image or video, run the below commands.
-### Image
-```
-torchrun --nproc_per_node=1 -m oadp.dp.demo ./configs/dp/ralf/raf/lvis_raf.py work_dirs/lvis_ral/epoch_24.pth --image demo/input/sample.jpg
-```
-### Video
-```
-torchrun --nproc_per_node=1 -m oadp.dp.demo ./configs/dp/ralf/raf/lvis_raf.py work_dirs/lvis_ral/epoch_24.pth --video demo/input/sample.mp4
-```
