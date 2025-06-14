@@ -19,7 +19,7 @@ def main():
 
     # === Set your OpenAI API key ===
     client = openai.OpenAI(
-        api_key=os.getenv("OPENAI_API_KEY") or "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"
+        api_key=os.getenv("OPENAI_API_KEY") or "YOUR-API-KEY"
     )
 
     # === Clear the output file at the start ===

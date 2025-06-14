@@ -1,10 +1,10 @@
 # RALF reasoning: Multi-Layer LLM Prompting for Open-Vocabulary Object Detection
-> Chia-Yu Wu, Wei Huang, Yen-Yu Lin, Chien-Yao Wang
+> Chia-Yu Wu, Wei Huang
 > 
 > National Yang Ming Chiao Tung University
 > 
 
-Our project is based on the paper "[Retrieval-Augmented Open-Vocabulary Object Detection](https://arxiv.org/abs/2404.05687)", which introduces the RALF method to boost model accuracy in open-vocabulary object detection. You can find the original paper's implementation on [GitHub](https://github.com/mlvlab/RALF/tree/main?tab=readme-ov-file)
+Our project is based on the paper "[Retrieval-Augmented Open-Vocabulary Object Detection](https://arxiv.org/abs/2404.05687)", which introduces the RALF method to boost model accuracy in open-vocabulary object detection. You can find the original paper's implementation on [GitHub](https://github.com/mlvlab/RALF/tree/main?tab=readme-ov-file).
 
 ## Introduction
 ![RAF flow chart](Figures/RAF%20flow%20chart.png)
@@ -26,12 +26,14 @@ python txt_to_pkl.py
 ### RAL training
 In OADP folder
 ```
+cd OADP
 torchrun --nproc_per_node=4 -m oadp.dp.train coco_ral ./configs/dp/ralf/ral/coco_ral.py
 ```
 
 ### RALF inference
 In OADP folder
 ```
+cd OADP
 torchrun --nproc_per_node=4 -m oadp.dp.test ./configs/dp/ralf/raf/coco_raf.py work_dirs/coco_ral/iter_32000.pth
 ```
 
